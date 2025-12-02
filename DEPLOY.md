@@ -14,12 +14,21 @@ Para ativar o deploy automático, siga estes passos:
 4. Em **Source** (Origem), selecione:
    - Source: **GitHub Actions**
 
-### 2. Verificar permissões do Workflow
+### 2. Verificar permissões do Workflow (Opcional)
 
-1. Ainda em **Settings**, vá em **Actions** → **General**
-2. Na seção **Workflow permissions**, certifique-se de que:
-   - ✅ **Read and write permissions** está marcado
-   - ✅ **Allow GitHub Actions to create and approve pull requests** está marcado (opcional)
+**Nota**: Esta etapa é opcional porque o workflow já define as permissões necessárias no próprio arquivo YAML:
+```yaml
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+```
+
+Se você quiser verificar as configurações de permissões:
+1. Vá em **Settings** → **Actions** → **General**
+2. Na seção **Workflow permissions**:
+   - Se as opções estiverem desabilitadas/cinzas, está tudo bem! Isso significa que as permissões são controladas pela organização ou pelo próprio workflow
+   - Se estiverem habilitadas, você pode opcionalmente marcar **Read and write permissions**
 
 ### 3. Fazer o primeiro deploy
 
