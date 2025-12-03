@@ -1,17 +1,12 @@
-import { Component, Inject, Lazy, Mount } from "@mini/core";
+import { Header } from "@/shared/components/Header";
+import { Sidebar } from "@/shared/components/Sidebar";
+import { Spinner } from "@/shared/components/Spinner";
+import { Component, Inject, Lazy } from "@mini/core";
 import { Route, RouterService, RouteSwitcher } from "@mini/router";
-import { Header } from "../shared/components/Header";
-import { Sidebar } from "../shared/components/Sidebar";
 
 @Route("/")
 export class Layout extends Component {
   @Inject(RouterService) router!: RouterService;
-  @Inject(Symbol.for("teste")) ass!: string;
-
-  @Mount()
-  onMount() {
-    console.log("Layout mounted", this);
-  }
 
   render() {
     return (
@@ -27,25 +22,63 @@ export class Layout extends Component {
                 )}
               >
                 {() => [
-                  Lazy("./(gettingStarted)/introduction#IntroductionPage"),
-                  Lazy("./(gettingStarted)/quick-start#QuickStartPage"),
-                  Lazy("./(gettingStarted)/installation#InstallationPage"),
-                  Lazy("./(gettingStarted)/first-component#FirstComponentPage"),
-                  Lazy("./(gettingStarted)/basic-concepts#BasicConceptsPage"),
-                  Lazy("./(core)/reactivity#ReactivityPage"),
-                  Lazy("./(core)/components#ComponentsPage"),
-                  Lazy("./(core)/jsx#JSXPage"),
-                  Lazy("./(core)/lifecycle#LifecyclePage"),
-                  Lazy("./(core)/props-children#PropsChildrenPage"),
+                  Lazy("./(gettingStarted)/introduction#IntroductionPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(gettingStarted)/quick-start#QuickStartPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(gettingStarted)/installation#InstallationPage", {
+                    loading: () => <Spinner />,
+                  }),
                   Lazy(
-                    "./(features)/dependency-injection#DependencyInjectionPage"
+                    "./(gettingStarted)/first-component#FirstComponentPage",
+                    {
+                      loading: () => <Spinner />,
+                    }
                   ),
-                  Lazy("./(features)/routing#RoutingPage"),
-                  Lazy("./(features)/guards-resolvers#GuardsResolversPage"),
-                  Lazy("./(features)/state-management#StateManagementPage"),
-                  Lazy("./(features)/slots#SlotsPage"),
-                  Lazy("./(features)/loading-states#LoadingStatesPage"),
-                  Lazy("./(gettingStarted)/markdown-test#MarkdownTestPage"),
+                  Lazy("./(gettingStarted)/basic-concepts#BasicConceptsPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(core)/reactivity#ReactivityPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(core)/components#ComponentsPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(core)/jsx#JSXPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(core)/lifecycle#LifecyclePage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(core)/props-children#PropsChildrenPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy(
+                    "./(features)/dependency-injection#DependencyInjectionPage",
+                    {
+                      loading: () => <Spinner />,
+                    }
+                  ),
+                  Lazy("./(features)/routing#RoutingPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(features)/guards-resolvers#GuardsResolversPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(features)/state-management#StateManagementPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(features)/slots#SlotsPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(features)/loading-states#LoadingStatesPage", {
+                    loading: () => <Spinner />,
+                  }),
+                  Lazy("./(gettingStarted)/markdown-test#MarkdownTestPage", {
+                    loading: () => <Spinner />,
+                  }),
                 ]}
               </RouteSwitcher>
             </div>
