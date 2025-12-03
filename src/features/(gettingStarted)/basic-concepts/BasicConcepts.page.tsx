@@ -1,6 +1,3 @@
-import Prism from "prismjs";
-import "prismjs/components/prism-tsx";
-
 import { Component } from "@mini/core";
 import { Link, Route } from "@mini/router";
 import { CodeBlock } from "@/shared/components/CodeBlock";

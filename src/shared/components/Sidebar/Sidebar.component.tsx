@@ -1,6 +1,7 @@
+import { Icon } from "@/shared/components/Icon";
 import { Component, Inject, Mount, Signal, signal } from "@mini/core";
 import { Link, RouterService } from "@mini/router";
-import { Icon } from "@/shared/components/Icon";
+import { map } from "rxjs";
 import { MENU_SECTIONS } from "./constants";
 
 export class Sidebar extends Component {
@@ -21,8 +22,26 @@ export class Sidebar extends Component {
     });
   }
 
+  @Mount()
+  setupOpenSections() {
+    return MENU_SECTIONS.forEach((section, index) => {
+      section.items.forEach(async (item) => {
+        const active = await this.isActive(item.path);
+        if (active) {
+          const newSet = await this.openSections;
+          newSet.add(index);
+          this.openSections.set(newSet);
+        }
+      });
+    });
+  }
+
   isActive(path: string): Signal<boolean> {
-    return this.currentPath.map((url) => url === path);
+    return this.currentPath.map(
+      (url) =>
+        this.sanitizeURL(url) ===
+        this.sanitizeURL(import.meta.env.BASE_URL + path)
+    );
   }
 
   toggleSection(index: number) {
@@ -38,8 +57,8 @@ export class Sidebar extends Component {
     this.openSections.set(newSet);
   }
 
-  isSectionOpen(index: number): boolean {
-    return this.openSections.value.has(index);
+  isSectionOpen(index: number): Signal<boolean> {
+    return signal(this.openSections.pipe(map((e) => e.has(index))));
   }
 
   render() {
@@ -56,66 +75,73 @@ export class Sidebar extends Component {
                 <span>{section.title}</span>
                 <Icon
                   name="arrow-down"
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    this.isSectionOpen(sectionIndex) ? "rotate-180" : ""
-                  }`}
+                  className={this.isSectionOpen(sectionIndex).map(
+                    (open) =>
+                      `w-4 h-4 transition-transform duration-200 ${
+                        open ? "rotate-180" : ""
+                      }`
+                  )}
                   size={16}
                 />
               </button>
 
               {/* Section Items - Collapsible */}
-              {this.openSections.map((openSet) => {
-                const isOpen = openSet === sectionIndex;
-                return (
-                  <div
-                    key={`content-${sectionIndex}`}
-                    className={`overflow-hidden transition-all duration-200 ${
-                      isOpen
-                        ? "max-h-[1000px] opacity-100"
-                        : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <ul className="space-y-1">
-                      {section.items.map((item) => {
-                        const isActive = this.isActive(item.path);
-                        return (
-                          <li key={item.path}>
-                            <Link
-                              href={item.path}
+              <div
+                key={`content-${sectionIndex}`}
+                className={this.openSections.pipe(
+                  map(
+                    (openSet) =>
+                      `overflow-hidden transition-all duration-200 ${
+                        openSet.has(sectionIndex)
+                          ? "max-h-[1000px] opacity-100"
+                          : "max-h-0 opacity-0"
+                      } `
+                  )
+                )}
+              >
+                <ul className="space-y-1">
+                  {section.items.map((item) => {
+                    const isActive = this.isActive(item.path);
+                    return (
+                      <li key={item.path}>
+                        <Link
+                          href={item.path}
+                          className={isActive.map(
+                            (active) =>
+                              `block px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
+                                active
+                                  ? "bg-linear-to-r from-purple-500/20 to-pink-500/20 border-l-2 border-purple-500 text-white font-semibold"
+                                  : "text-gray-300 hover:text-white hover:bg-gray-800/50"
+                              }`
+                          )}
+                        >
+                          <span className="flex items-center">
+                            <Icon
+                              name={item.icon}
                               className={isActive.map(
                                 (active) =>
-                                  `block px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
-                                    active
-                                      ? "bg-linear-to-r from-purple-500/20 to-pink-500/20 border-l-2 border-purple-500 text-white font-semibold"
-                                      : "text-gray-300 hover:text-white hover:bg-gray-800/50"
+                                  `w-4 h-4 mr-3 ${
+                                    active ? "text-purple-400" : ""
                                   }`
                               )}
-                            >
-                              <span className="flex items-center">
-                                <Icon
-                                  name={item.icon}
-                                  className={isActive.map(
-                                    (active) =>
-                                      `w-4 h-4 mr-3 ${
-                                        active ? "text-purple-400" : ""
-                                      }`
-                                  )}
-                                  size={16}
-                                />
-                                {item.title}
-                              </span>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })}
+                              size={16}
+                            />
+                            {item.title}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           ))}
         </nav>
       </aside>
     );
+  }
+
+  private sanitizeURL(url: string): string {
+    return url.replace(/\/\/+/g, "/").replace(/\/$/, "");
   }
 }

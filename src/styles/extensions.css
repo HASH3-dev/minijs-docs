@@ -1,0 +1,14 @@
+
+@utility scrollbar-* {
+  scrollbar-width: --value("auto", "none", "thin");
+  scrollbar-gutter: --value("stable", "auto", "stable");
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+@utility scrollbar-track-* {
+  --scrollbar-track: --value(--color-*, "transparent");
+}
+
+@utility scrollbar-thumb-* {
+  --scrollbar-thumb: --value(--color-*, "transparent");
+}

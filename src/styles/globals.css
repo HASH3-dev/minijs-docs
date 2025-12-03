@@ -1,5 +1,7 @@
 @import "tailwindcss";
+@import "./extensions.css";
 @plugin "@tailwindcss/typography";
+
 
 /* Custom styles */
 @theme {
@@ -15,4 +17,8 @@ body {
 .anchor {
   scroll-margin-top: 6rem;
   scroll-behavior: smooth;
+}
+
+* {
+  @apply scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900;
 }
